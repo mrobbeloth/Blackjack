@@ -1,0 +1,47 @@
+# NMake build file for Visual C++
+# Usage (from Developer Command Prompt):
+#   nmake /f Makefile.win
+#   nmake /f Makefile.win run
+#   nmake /f Makefile.win clean
+
+!IFNDEF CXX
+CXX=cl
+!ENDIF
+
+!IFNDEF CXXFLAGS
+CXXFLAGS=/nologo /std:c++17 /EHsc /W4
+!ENDIF
+
+!IFNDEF LDFLAGS
+LDFLAGS=/nologo
+!ENDIF
+
+TARGET=blackjack.exe
+SRCS=Blackjack.cpp Card.cpp Deck.cpp Display.cpp Hand.cpp
+OBJS=Blackjack.obj Card.obj Deck.obj Display.obj Hand.obj
+
+all: $(TARGET)
+
+$(TARGET): $(OBJS)
+	$(CXX) $(LDFLAGS) $(OBJS) /Fe$(TARGET)
+
+Blackjack.obj: Blackjack.cpp Deck.h Hand.h Display.h
+	$(CXX) $(CXXFLAGS) /c Blackjack.cpp /FoBlackjack.obj
+
+Card.obj: Card.cpp Card.h Display.h
+	$(CXX) $(CXXFLAGS) /c Card.cpp /FoCard.obj
+
+Deck.obj: Deck.cpp Deck.h Card.h
+	$(CXX) $(CXXFLAGS) /c Deck.cpp /FoDeck.obj
+
+Display.obj: Display.cpp Display.h Card.h Hand.h
+	$(CXX) $(CXXFLAGS) /c Display.cpp /FoDisplay.obj
+
+Hand.obj: Hand.cpp Hand.h Card.h Display.h
+	$(CXX) $(CXXFLAGS) /c Hand.cpp /FoHand.obj
+
+run: $(TARGET)
+	.\$(TARGET)
+
+clean:
+	-del /Q $(OBJS) $(TARGET) 2>nul
