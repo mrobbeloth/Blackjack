@@ -9,39 +9,41 @@ CXX=cl
 !ENDIF
 
 !IFNDEF CXXFLAGS
-CXXFLAGS=/nologo /std:c++17 /EHsc /W4
+CXXFLAGS=/nologo /std:c++20 /EHsc /W4
 !ENDIF
 
 !IFNDEF LDFLAGS
 LDFLAGS=/nologo
 !ENDIF
 
-TARGET=blackjack.exe
-SRCS=Blackjack.cpp Card.cpp Deck.cpp Display.cpp Hand.cpp
-OBJS=Blackjack.obj Card.obj Deck.obj Display.obj Hand.obj
+DESTINATION_DIR=output\\
+SRC_DIR=src\\
+TARGET=$(DESTINATION_DIR)blackjack.exe
+OBJS=$(DESTINATION_DIR)Blackjack.obj $(DESTINATION_DIR)Card.obj $(DESTINATION_DIR)Deck.obj \
+     $(DESTINATION_DIR)Display.obj $(DESTINATION_DIR)Hand.obj
 
 all: $(TARGET)
 
-$(TARGET): $(OBJS)
-	$(CXX) $(LDFLAGS) $(OBJS) /Fe$(TARGET)
+# Inference rule: src\*.cpp -> output\*.obj
+{$(SRC_DIR)}.cpp{$(DESTINATION_DIR)}.obj:
+    $(CXX) $(CXXFLAGS) /c $< /Fo$@
 
-Blackjack.obj: Blackjack.cpp Deck.h Hand.h Display.h
-	$(CXX) $(CXXFLAGS) /c Blackjack.cpp /FoBlackjack.obj
+$(DESTINATION_DIR):
+    @if not exist $(DESTINATION_DIR) mkdir $(DESTINATION_DIR)
 
-Card.obj: Card.cpp Card.h Display.h
-	$(CXX) $(CXXFLAGS) /c Card.cpp /FoCard.obj
+$(TARGET): $(DESTINATION_DIR) $(OBJS)
+    $(CXX) $(LDFLAGS) $(OBJS) /Fe$(TARGET)
 
-Deck.obj: Deck.cpp Deck.h Card.h
-	$(CXX) $(CXXFLAGS) /c Deck.cpp /FoDeck.obj
-
-Display.obj: Display.cpp Display.h Card.h Hand.h
-	$(CXX) $(CXXFLAGS) /c Display.cpp /FoDisplay.obj
-
-Hand.obj: Hand.cpp Hand.h Card.h Display.h
-	$(CXX) $(CXXFLAGS) /c Hand.cpp /FoHand.obj
+# Header dependencies — triggers recompile when headers change
+$(DESTINATION_DIR)Blackjack.obj: $(SRC_DIR)Deck.h $(SRC_DIR)Hand.h $(SRC_DIR)Display.h
+$(DESTINATION_DIR)Card.obj:      $(SRC_DIR)Card.h $(SRC_DIR)Display.h
+$(DESTINATION_DIR)Deck.obj:      $(SRC_DIR)Deck.h $(SRC_DIR)Card.h
+$(DESTINATION_DIR)Display.obj:   $(SRC_DIR)Display.h $(SRC_DIR)Card.h $(SRC_DIR)Hand.h
+$(DESTINATION_DIR)Hand.obj:      $(SRC_DIR)Hand.h $(SRC_DIR)Card.h $(SRC_DIR)Display.h
 
 run: $(TARGET)
-	.\$(TARGET)
+    .\$(TARGET)
 
 clean:
-	-del /Q $(OBJS) $(TARGET) 2>nul
+    -del /Q $(OBJS) $(TARGET) 2>nul
+    -rmdir /Q $(DESTINATION_DIR) 2>nul
