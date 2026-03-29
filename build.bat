@@ -5,6 +5,7 @@ REM One-step NMake wrapper for this project.
 REM Usage:
 REM   build.bat           -> nmake /f Makefile.win
 REM   build.bat run       -> nmake /f Makefile.win run
+REM   build.bat test      -> nmake /f Makefile.win test
 REM   build.bat clean     -> nmake /f Makefile.win clean
 
 set "VSWHERE=%ProgramFiles(x86)%\Microsoft Visual Studio\Installer\vswhere.exe"
