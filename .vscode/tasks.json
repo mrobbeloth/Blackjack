@@ -4,8 +4,26 @@
     {
       "label": "Build Blackjack (MSVC)",
       "type": "shell",
-      "command": "cl.exe",
+      "command": "cmd.exe",
       "args": [
+        "/C",
+        "build.bat"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "Build Blackjack (MSVC - direct cl.exe)",
+      "type": "shell",
+      "command": "cmd.exe",
+      "args": [
+        "/C",
+        "\"${env:ProgramFiles}\\Microsoft Visual Studio\\2022\\Community\\Common7\\Tools\\VsDevCmd.bat\"",
+        "&&",
+        "cl.exe",
         "/nologo",
         "/std:c++20",
         "/EHsc",
@@ -18,11 +36,15 @@
         "src\\Display.cpp",
         "src\\Hand.cpp"
       ],
-      "group": {
-        "kind": "build",
-        "isDefault": true
-      },
+      "group": "build",
       "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "List output files",
+      "type": "shell",
+      "command": "Get-ChildItem -Path output | Format-List",
+      "group": "none",
+      "problemMatcher": []
     }
   ]
 }
