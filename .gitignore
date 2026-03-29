@@ -2,3 +2,4 @@
 *.obj
 *.dll
 *.log
+build
