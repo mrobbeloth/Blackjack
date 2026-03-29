@@ -1,0 +1,28 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Build Blackjack (MSVC)",
+      "type": "shell",
+      "command": "cl.exe",
+      "args": [
+        "/nologo",
+        "/std:c++20",
+        "/EHsc",
+        "/W4",
+        "/Fo:output\\",
+        "/Fe:output\\blackjack.exe",
+        "src\\Blackjack.cpp",
+        "src\\Card.cpp",
+        "src\\Deck.cpp",
+        "src\\Display.cpp",
+        "src\\Hand.cpp"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": "$msCompile"
+    }
+  ]
+}

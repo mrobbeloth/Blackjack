@@ -3,6 +3,7 @@
 #include <iostream>
 #include <iomanip>
 #include <sstream>
+#include <cassert>
 
 #ifdef _WIN32
 #include <windows.h>
@@ -40,6 +41,10 @@ std::string Display::suitColor(char suit) {
 }
 
 std::string Display::rankString(int value) {
+
+    /* example of unit test using assertion */
+    assert(value >= 1 && value <= 13);
+
     switch (value) {
     case 1:  return "A";
     case 11: return "J";
@@ -165,6 +170,9 @@ void Display::renderTable(const std::string& dealerLabel,
                            bool hideDealerFirst) {
     clearScreen();
 
+    /* make sure player and dealer scores are non-negative */
+    assert(playerScore >= 0 && dealerScore >= 0);
+
     // Title
     std::cout << Ansi::BOLD << Ansi::CYAN;
     std::cout << "\xe2\x95\x90\xe2\x95\x90\xe2\x95\x90\xe2\x95\x90\xe2\x95\x90"  // ═════
@@ -200,21 +208,36 @@ void Display::renderTable(const std::string& dealerLabel,
 }
 
 void Display::printPlayerWins(const std::string& msg) {
+    /* Make sure message is not empty */
+    assert(!msg.empty());
+
     std::cout << Ansi::BOLD << Ansi::GREEN << msg << Ansi::RESET << std::endl;
 }
 
 void Display::printDealerWins(const std::string& msg) {
+    /* Make sure message is not empty */
+    assert(!msg.empty());
+
     std::cout << Ansi::BOLD << Ansi::RED << msg << Ansi::RESET << std::endl;
 }
 
 void Display::printBust(const std::string& msg) {
+    /* Make sure message is not empty */
+    assert(!msg.empty());
+
     std::cout << Ansi::BOLD << Ansi::YELLOW << msg << Ansi::RESET << std::endl;
 }
 
 void Display::printPrompt(const std::string& msg) {
+    /* Make sure message is not empty */
+    assert(!msg.empty());
+
     std::cout << Ansi::WHITE << msg << Ansi::RESET;
 }
 
 void Display::printInfo(const std::string& msg) {
+    /* Make sure message is not empty */
+    assert(!msg.empty());
+
     std::cout << Ansi::CYAN << msg << Ansi::RESET << std::endl;
 }
