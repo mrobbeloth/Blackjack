@@ -181,8 +181,11 @@ float get_bet(float balance) {
     Display::printPrompt("How much do you want to bet? $");
     std::cin >> bet;
 
-    while (bet > balance) {
-        Display::printBust("You can't bet more than your balance ($" + std::to_string((int)balance) + ")");
+    while (bet <= 0 || bet > balance) {
+        if (bet <= 0)
+            Display::printBust("Bet must be greater than $0.");
+        else
+            Display::printBust("You can't bet more than your balance ($" + std::to_string((int)balance) + ")");
         Display::printPrompt("How much do you want to bet? $");
         std::cin >> bet;
     }
