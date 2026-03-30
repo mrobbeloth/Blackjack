@@ -1,20 +1,9 @@
 // Blackjack.cpp : This file contains the 'main' function. Program execution begins and ends there.
 //
 
-#define PLAYER_WINS 1
-#define DEALER_WINS 0
-#define PLAYER_BUSTED -1
-#define DEALER_BUSTED 2
 
-#include <iostream>
-#include <cstring>
-#include <limits>
-#include "Hand.h"
-#include "Deck.h"
-#include "Display.h"
 
-int play_hand(float balance, float bet);
-float get_bet(float);
+#include "Blackjack.h"
 
 int main(int argc, char* argv[])
 {
@@ -143,7 +132,7 @@ int play_hand(float balance, float bet){
                              "PLAYER", player_hand.getCards(), player_hand.score(),
                              balance, bet, false);
 
-        while (dealer_hand.score() <= player_hand.score() && dealer_hand.score() < 21 || dealer_hand.score() < 17) {
+        while (dealer_should_hit(dealer_hand.score(), player_hand.score())) {
             Display::printInfo("Dealer hits...");
             dealer_hand.add_card(d1.deal());
 

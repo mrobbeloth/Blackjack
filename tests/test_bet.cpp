@@ -1,5 +1,6 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include "doctest.h"
+#include "../src/Blackjack.h"
 
 #include <cstdio>
 #include <cstdlib>
@@ -7,6 +8,7 @@
 #include <array>
 #include <fstream>
 #include <chrono>
+
 
 #ifdef _WIN32
 #define popen  _popen
@@ -79,4 +81,80 @@ TEST_CASE("Negative bet then valid bet does not hang") {
 
     CHECK(secs < 30);
     CHECK(output.find("greater than") != std::string::npos);
+}
+
+TEST_CASE("Dealer should hit on less than 17 when player has more") {
+    // Simulate the scenario: dealer has 17, player has 20
+    Hand dealer_hand;
+    dealer_hand.add_card(Card(10, 'S'));  // 10
+    dealer_hand.add_card(Card(6, 'H'));   // 6  → score = 16
+
+    Hand player_hand;
+    player_hand.add_card(Card(10, 'D'));  // 10
+    player_hand.add_card(Card(10, 'C'));  // 10 → score = 20
+
+    int ds = dealer_hand.score();
+    int ps = player_hand.score();
+
+    bool should_hit = dealer_should_hit(ds, ps);
+
+    // Dealer has 16, should HIT in real blackjack
+    CHECK(should_hit == true);  
+}
+
+TEST_CASE("Dealer should hit on less than 17 when player has less") {
+    // Simulate the scenario: dealer has 17, player has 20
+    Hand dealer_hand;
+    dealer_hand.add_card(Card(10, 'S'));  // 10
+    dealer_hand.add_card(Card(6, 'H'));   // 6  → score = 16
+
+    Hand player_hand;
+    player_hand.add_card(Card(5, 'D'));  // 5
+    player_hand.add_card(Card(6, 'C'));  // 6 → score = 11
+
+    int ds = dealer_hand.score();
+    int ps = player_hand.score();
+
+    bool should_hit = dealer_should_hit(ds, ps);
+
+    // Dealer has 16, should HIT in real blackjack
+    CHECK(should_hit == true); 
+}
+
+TEST_CASE("Dealer should stand on 17 when player has more") {
+    // Simulate the scenario: dealer has 17, player has 20
+    Hand dealer_hand;
+    dealer_hand.add_card(Card(10, 'S'));  // 10
+    dealer_hand.add_card(Card(7, 'H'));   // 7  → score = 17
+
+    Hand player_hand;
+    player_hand.add_card(Card(10, 'D'));  // 10
+    player_hand.add_card(Card(10, 'C'));  // 10 → score = 20
+
+    int ds = dealer_hand.score();
+    int ps = player_hand.score();
+
+    bool should_hit = dealer_should_hit(ds, ps);
+
+    // Dealer has 17, should STAND in real blackjack
+    CHECK(should_hit == false); 
+}
+
+TEST_CASE("Dealer should stand on 17 when player has less") {
+    // Simulate the scenario: dealer has 17, player has 20
+    Hand dealer_hand;
+    dealer_hand.add_card(Card(10, 'S'));  // 10
+    dealer_hand.add_card(Card(7, 'H'));   // 7  → score = 17
+
+    Hand player_hand;
+    player_hand.add_card(Card(5, 'D'));  // 5
+    player_hand.add_card(Card(6, 'C'));  // 6 → score = 11
+
+    int ds = dealer_hand.score();
+    int ps = player_hand.score();
+
+    bool should_hit = dealer_should_hit(ds, ps);
+
+    // Dealer has 17, should STAND in real blackjack
+    CHECK(should_hit == false); 
 }

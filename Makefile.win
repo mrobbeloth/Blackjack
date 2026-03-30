@@ -20,7 +20,7 @@ DESTINATION_DIR=output\\
 SRC_DIR=src\\
 TARGET=$(DESTINATION_DIR)blackjack.exe
 OBJS=$(DESTINATION_DIR)Blackjack.obj $(DESTINATION_DIR)Card.obj $(DESTINATION_DIR)Deck.obj \
-     $(DESTINATION_DIR)Display.obj $(DESTINATION_DIR)Hand.obj
+     $(DESTINATION_DIR)Display.obj $(DESTINATION_DIR)Hand.obj $(DESTINATION_DIR)GameLogic.obj
 
 TEST_DIR=tests\\
 TEST_CARD_TARGET=$(DESTINATION_DIR)test_card.exe
@@ -33,7 +33,7 @@ TEST_HAND_TARGET=$(DESTINATION_DIR)test_hand.exe
 TEST_HAND_OBJS=$(DESTINATION_DIR)test_hand.obj $(DESTINATION_DIR)Card.obj $(DESTINATION_DIR)Hand.obj $(DESTINATION_DIR)Display.obj
 
 TEST_BET_TARGET=$(DESTINATION_DIR)test_bet.exe
-TEST_BET_OBJS=$(DESTINATION_DIR)test_bet.obj
+TEST_BET_OBJS=$(DESTINATION_DIR)test_bet.obj $(DESTINATION_DIR)Card.obj $(DESTINATION_DIR)Hand.obj $(DESTINATION_DIR)Display.obj $(DESTINATION_DIR)GameLogic.obj
 
 all: $(TARGET)
 
@@ -53,6 +53,7 @@ $(DESTINATION_DIR)Card.obj:      $(SRC_DIR)Card.h $(SRC_DIR)Display.h
 $(DESTINATION_DIR)Deck.obj:      $(SRC_DIR)Deck.h $(SRC_DIR)Card.h
 $(DESTINATION_DIR)Display.obj:   $(SRC_DIR)Display.h $(SRC_DIR)Card.h $(SRC_DIR)Hand.h
 $(DESTINATION_DIR)Hand.obj:      $(SRC_DIR)Hand.h $(SRC_DIR)Card.h $(SRC_DIR)Display.h
+$(DESTINATION_DIR)GameLogic.obj: $(SRC_DIR)Blackjack.h
 
 # ── Test targets ─────────────────────────────────────────────
 $(DESTINATION_DIR)test_card.obj: $(TEST_DIR)test_card.cpp

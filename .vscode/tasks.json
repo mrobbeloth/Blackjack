@@ -45,6 +45,21 @@
       "command": "Get-ChildItem -Path output | Format-List",
       "group": "none",
       "problemMatcher": []
-    }
+    },
+        {
+      "label": "Build Tests",
+      "type": "shell",
+      "command": "cmd.exe",
+      "args": [
+        "/C",
+        "build.bat",
+        "test"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": false
+      },
+      "problemMatcher": "$msCompile"
+    },
   ]
 }
