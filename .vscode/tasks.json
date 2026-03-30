@@ -34,7 +34,8 @@
         "src\\Card.cpp",
         "src\\Deck.cpp",
         "src\\Display.cpp",
-        "src\\Hand.cpp"
+        "src\\Hand.cpp",
+        "src\\GameLogic.cpp"
       ],
       "group": "build",
       "problemMatcher": "$msCompile"
