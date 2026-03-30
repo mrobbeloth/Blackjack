@@ -8,6 +8,7 @@
 
 #include <iostream>
 #include <cstring>
+#include <limits>
 #include "Hand.h"
 #include "Deck.h"
 #include "Display.h"
@@ -181,8 +182,12 @@ float get_bet(float balance) {
     Display::printPrompt("How much do you want to bet? $");
     std::cin >> bet;
 
-    while (bet <= 0 || bet > balance) {
-        if (bet <= 0)
+    while (std::cin.fail() || bet <= 0 || bet > balance) {
+        if (std::cin.fail()) {
+            std::cin.clear();
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            Display::printBust("Invalid input. Please enter a number.");
+        } else if (bet <= 0)
             Display::printBust("Bet must be greater than $0.");
         else
             Display::printBust("You can't bet more than your balance ($" + std::to_string((int)balance) + ")");
