@@ -23,9 +23,14 @@ OBJS=$(DESTINATION_DIR)Blackjack.obj $(DESTINATION_DIR)Card.obj $(DESTINATION_DI
      $(DESTINATION_DIR)Display.obj $(DESTINATION_DIR)Hand.obj
 
 TEST_DIR=tests\\
-TEST_TARGET=$(DESTINATION_DIR)blackjack_tests.exe
-TEST_OBJS=$(DESTINATION_DIR)test_card.obj $(DESTINATION_DIR)Card.obj $(DESTINATION_DIR)Deck.obj \
-          $(DESTINATION_DIR)Display.obj $(DESTINATION_DIR)Hand.obj
+TEST_CARD_TARGET=$(DESTINATION_DIR)test_card.exe
+TEST_CARD_OBJS=$(DESTINATION_DIR)test_card.obj $(DESTINATION_DIR)Card.obj $(DESTINATION_DIR)Display.obj
+
+TEST_DECK_TARGET=$(DESTINATION_DIR)test_deck.exe
+TEST_DECK_OBJS=$(DESTINATION_DIR)test_deck.obj $(DESTINATION_DIR)Card.obj $(DESTINATION_DIR)Deck.obj $(DESTINATION_DIR)Display.obj
+
+TEST_HAND_TARGET=$(DESTINATION_DIR)test_hand.exe
+TEST_HAND_OBJS=$(DESTINATION_DIR)test_hand.obj $(DESTINATION_DIR)Card.obj $(DESTINATION_DIR)Hand.obj $(DESTINATION_DIR)Display.obj
 
 all: $(TARGET)
 
@@ -46,19 +51,33 @@ $(DESTINATION_DIR)Deck.obj:      $(SRC_DIR)Deck.h $(SRC_DIR)Card.h
 $(DESTINATION_DIR)Display.obj:   $(SRC_DIR)Display.h $(SRC_DIR)Card.h $(SRC_DIR)Hand.h
 $(DESTINATION_DIR)Hand.obj:      $(SRC_DIR)Hand.h $(SRC_DIR)Card.h $(SRC_DIR)Display.h
 
-# ── Test target ──────────────────────────────────────────────
+# ── Test targets ─────────────────────────────────────────────
 $(DESTINATION_DIR)test_card.obj: $(TEST_DIR)test_card.cpp
     $(CXX) $(CXXFLAGS) /I$(TEST_DIR) /c $(TEST_DIR)test_card.cpp /Fo$@
 
-$(TEST_TARGET): $(DESTINATION_DIR) $(TEST_OBJS)
-    $(CXX) $(LDFLAGS) $(TEST_OBJS) /Fe$(TEST_TARGET)
+$(TEST_CARD_TARGET): $(DESTINATION_DIR) $(TEST_CARD_OBJS)
+    $(CXX) $(LDFLAGS) $(TEST_CARD_OBJS) /Fe$(TEST_CARD_TARGET)
 
-test: $(TEST_TARGET)
-    .\$(TEST_TARGET)
+$(DESTINATION_DIR)test_deck.obj: $(TEST_DIR)test_deck.cpp
+    $(CXX) $(CXXFLAGS) /I$(TEST_DIR) /c $(TEST_DIR)test_deck.cpp /Fo$@
+
+$(TEST_DECK_TARGET): $(DESTINATION_DIR) $(TEST_DECK_OBJS)
+    $(CXX) $(LDFLAGS) $(TEST_DECK_OBJS) /Fe$(TEST_DECK_TARGET)
+
+$(DESTINATION_DIR)test_hand.obj: $(TEST_DIR)test_hand.cpp
+    $(CXX) $(CXXFLAGS) /I$(TEST_DIR) /c $(TEST_DIR)test_hand.cpp /Fo$@
+
+$(TEST_HAND_TARGET): $(DESTINATION_DIR) $(TEST_HAND_OBJS)
+    $(CXX) $(LDFLAGS) $(TEST_HAND_OBJS) /Fe$(TEST_HAND_TARGET)
+
+test: $(TEST_CARD_TARGET) $(TEST_DECK_TARGET) $(TEST_HAND_TARGET)
+    .\$(TEST_CARD_TARGET)
+    .\$(TEST_DECK_TARGET)
+    .\$(TEST_HAND_TARGET)
 
 run: $(TARGET)
     .\$(TARGET)
 
 clean:
-    -del /Q $(OBJS) $(TEST_OBJS) $(TARGET) $(TEST_TARGET) 2>nul
+    -del /Q $(OBJS) $(TEST_CARD_OBJS) $(TEST_DECK_OBJS) $(TEST_HAND_OBJS) $(TARGET) $(TEST_CARD_TARGET) $(TEST_DECK_TARGET) $(TEST_HAND_TARGET) 2>nul
     -rmdir /Q $(DESTINATION_DIR) 2>nul

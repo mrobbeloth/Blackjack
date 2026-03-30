@@ -17,14 +17,14 @@ add_executable(blackjack
 # ── Tests (doctest) ──────────────────────────────────────────
 enable_testing()
 
-add_executable(blackjack_tests
-    tests/test_card.cpp
-    src/Card.cpp
-    src/Deck.cpp
-    src/Display.cpp
-    src/Hand.cpp
-)
+add_executable(test_card tests/test_card.cpp src/Card.cpp src/Display.cpp)
+target_include_directories(test_card PRIVATE tests)
+add_test(NAME CardTests COMMAND test_card)
 
-target_include_directories(blackjack_tests PRIVATE tests)
+add_executable(test_deck tests/test_deck.cpp src/Card.cpp src/Deck.cpp src/Display.cpp)
+target_include_directories(test_deck PRIVATE tests)
+add_test(NAME DeckTests COMMAND test_deck)
 
-add_test(NAME BlackjackTests COMMAND blackjack_tests)
+add_executable(test_hand tests/test_hand.cpp src/Card.cpp src/Hand.cpp src/Display.cpp)
+target_include_directories(test_hand PRIVATE tests)
+add_test(NAME HandTests COMMAND test_hand)
