@@ -1,0 +1,82 @@
+#define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
+#include "doctest.h"
+
+#include <cstdio>
+#include <cstdlib>
+#include <string>
+#include <array>
+#include <fstream>
+#include <chrono>
+
+#ifdef _WIN32
+#define popen  _popen
+#define pclose _pclose
+#endif
+
+// Helper: write input lines to a temp file, run blackjack.exe with stdin
+// redirected from that file, and return its stdout.
+static std::string run_with_input(const std::vector<std::string>& lines) {
+    // Write input to a temp file (one token/line per entry)
+    std::string tmpfile = "output\\test_input.txt";
+    {
+        std::ofstream ofs(tmpfile);
+        for (const auto& line : lines)
+            ofs << line << "\n";
+    }
+
+    std::string cmd = "output\\blackjack.exe < " + tmpfile + " 2>&1";
+
+    std::array<char, 4096> buffer;
+    std::string result;
+    FILE* pipe = popen(cmd.c_str(), "r");
+    if (!pipe) return "ERROR: popen failed";
+    while (fgets(buffer.data(), (int)buffer.size(), pipe) != nullptr) {
+        result += buffer.data();
+    }
+    pclose(pipe);
+    std::remove(tmpfile.c_str());
+    return result;
+}
+
+// ── Bet input validation tests (subprocess) ─────────────────
+
+TEST_CASE("Alpha bet input does not cause infinite loop") {
+    // Input sequence: Enter (welcome), "abc" (bad bet), "100" (good bet),
+    //                 "S" (stay), "N" (don't play again)
+    auto start = std::chrono::steady_clock::now();
+    std::string output = run_with_input({"", "abc", "100", "S", "N"});
+    auto elapsed = std::chrono::steady_clock::now() - start;
+    auto secs = std::chrono::duration_cast<std::chrono::seconds>(elapsed).count();
+
+    CHECK(secs < 30);
+    CHECK(output.find("Invalid input") != std::string::npos);
+}
+
+TEST_CASE("Numeric bet input works normally") {
+    auto start = std::chrono::steady_clock::now();
+    std::string output = run_with_input({"", "100", "S", "N"});
+    auto elapsed = std::chrono::steady_clock::now() - start;
+    auto secs = std::chrono::duration_cast<std::chrono::seconds>(elapsed).count();
+
+    CHECK(secs < 30);
+    CHECK(output.find("balance") != std::string::npos);
+}
+
+TEST_CASE("Multiple alpha inputs then valid bet does not hang") {
+    auto start = std::chrono::steady_clock::now();
+    std::string output = run_with_input({"", "abc", "xyz", "50", "S", "N"});
+    auto elapsed = std::chrono::steady_clock::now() - start;
+    auto secs = std::chrono::duration_cast<std::chrono::seconds>(elapsed).count();
+
+    CHECK(secs < 30);
+}
+
+TEST_CASE("Negative bet then valid bet does not hang") {
+    auto start = std::chrono::steady_clock::now();
+    std::string output = run_with_input({"", "-10", "50", "S", "N"});
+    auto elapsed = std::chrono::steady_clock::now() - start;
+    auto secs = std::chrono::duration_cast<std::chrono::seconds>(elapsed).count();
+
+    CHECK(secs < 30);
+    CHECK(output.find("greater than") != std::string::npos);
+}

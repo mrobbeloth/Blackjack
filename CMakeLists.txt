@@ -28,3 +28,7 @@ add_test(NAME DeckTests COMMAND test_deck)
 add_executable(test_hand tests/test_hand.cpp src/Card.cpp src/Hand.cpp src/Display.cpp)
 target_include_directories(test_hand PRIVATE tests)
 add_test(NAME HandTests COMMAND test_hand)
+
+add_executable(test_bet tests/test_bet.cpp)
+target_include_directories(test_bet PRIVATE tests)
+add_test(NAME BetTests COMMAND test_bet)
