@@ -8,6 +8,7 @@
 #include <array>
 #include <fstream>
 #include <chrono>
+#include <sstream>
 
 
 #ifdef _WIN32
@@ -19,14 +20,14 @@
 // redirected from that file, and return its stdout.
 static std::string run_with_input(const std::vector<std::string>& lines) {
     // Write input to a temp file (one token/line per entry)
-    std::string tmpfile = "output\\test_input.txt";
+    std::string tmpfile = "output/test_input.txt";
     {
         std::ofstream ofs(tmpfile);
         for (const auto& line : lines)
             ofs << line << "\n";
     }
 
-    std::string cmd = "output\\blackjack.exe < " + tmpfile + " 2>&1";
+    std::string cmd = "output/blackjack.exe < " + tmpfile + " 2>&1";
 
     std::array<char, 4096> buffer;
     std::string result;
@@ -81,6 +82,56 @@ TEST_CASE("Negative bet then valid bet does not hang") {
 
     CHECK(secs < 30);
     CHECK(output.find("greater than") != std::string::npos);
+}
+
+TEST_CASE("get_char_input accepts valid value directly") {
+    std::istringstream input("h\n");
+    std::ostringstream output;
+    std::streambuf* old_in = std::cin.rdbuf(input.rdbuf());
+    std::streambuf* old_out = std::cout.rdbuf(output.rdbuf());
+
+    char c = get_char_input("(H)it or (S)tay? ", "HhSs");
+
+    std::cin.rdbuf(old_in);
+    std::cout.rdbuf(old_out);
+
+    CHECK(c == 'h');
+    CHECK(output.str().find("(H)it or (S)tay?") != std::string::npos);
+}
+
+TEST_CASE("get_char_input reprompts after invalid value") {
+    std::istringstream input("x\nS\n");
+    std::ostringstream output;
+    std::streambuf* old_in = std::cin.rdbuf(input.rdbuf());
+    std::streambuf* old_out = std::cout.rdbuf(output.rdbuf());
+
+    char c = get_char_input("(H)it or (S)tay? ", "HhSs");
+
+    std::cin.rdbuf(old_in);
+    std::cout.rdbuf(old_out);
+
+    CHECK(c == 'S');
+    CHECK(output.str().find("Invalid input. Please enter one of: HhSs") != std::string::npos);
+}
+
+TEST_CASE("Invalid hit/stay input reprompts and then accepts valid input") {
+    auto start = std::chrono::steady_clock::now();
+    std::string output = run_with_input({"", "100", "X", "S", "N"});
+    auto elapsed = std::chrono::steady_clock::now() - start;
+    auto secs = std::chrono::duration_cast<std::chrono::seconds>(elapsed).count();
+
+    CHECK(secs < 30);
+    CHECK(output.find("Invalid input. Please enter one of: HhSs") != std::string::npos);
+}
+
+TEST_CASE("Invalid play-again input reprompts and then accepts valid input") {
+    auto start = std::chrono::steady_clock::now();
+    std::string output = run_with_input({"", "100", "S", "Q", "N"});
+    auto elapsed = std::chrono::steady_clock::now() - start;
+    auto secs = std::chrono::duration_cast<std::chrono::seconds>(elapsed).count();
+
+    CHECK(secs < 30);
+    CHECK(output.find("Invalid input. Please enter one of: YyNn") != std::string::npos);
 }
 
 TEST_CASE("Dealer should hit on less than 17 when player has more") {
