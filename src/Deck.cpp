@@ -1,5 +1,6 @@
 #include "Deck.h"
 #include "Card.h"
+#include <cstdlib>
 #include <vector>
 
 Deck::Deck() {

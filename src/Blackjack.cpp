@@ -19,7 +19,6 @@ int main(int argc, char* argv[])
     }
 
     bool play_again = true;
-    char response;
 
     float balance = 1000.0f; //player starts with $1,000
     float bet;
@@ -63,14 +62,8 @@ int main(int argc, char* argv[])
         std::cout << std::endl;
         Display::printInfo("Balance: $" + std::to_string((int)balance));
         std::cout << std::endl;
-        Display::printPrompt("Would you like to play another hand? (Y/N) ");
-        std::cin >> response;
-        if (response == 'y' || response == 'Y') {
-            play_again = true;
-        }
-        else {
-            play_again = false;
-        }
+        char again = get_char_input("Would you like to play another hand? (Y/N) ", "YyNn");
+        play_again = (again == 'Y' || again == 'y');
     }
     std::cout << std::endl;
     Display::printInfo("Thanks for playing! Final balance: $" + std::to_string((int)balance));
@@ -79,7 +72,6 @@ int main(int argc, char* argv[])
 
 int play_hand(float balance, float bet){
     bool hit = false;
-    char response;
     int result=0;
 
     srand((unsigned int)time(NULL));  //seed the random number generator
@@ -105,10 +97,8 @@ int play_hand(float balance, float bet){
                          balance, bet, true);
 
     /*Deal another card to the player as long as they want to hit*/
-    Display::printPrompt("(H)it or (S)tay? ");
-    std::cin >> response;
-
-    hit = (response == 'H' || response == 'h');
+    char action = get_char_input("(H)it or (S)tay? ", "HhSs");
+    hit = (action == 'H' || action == 'h');
 
     while (hit && player_hand.score()<21) {
         player_hand.add_card(d1.deal());
@@ -118,10 +108,8 @@ int play_hand(float balance, float bet){
                              balance, bet, true);
 
         if (player_hand.score() < 21) {
-            Display::printPrompt("(H)it or (S)tay? ");
-            std::cin >> response;
-
-            hit = (response == 'H' || response == 'h');
+            action = get_char_input("(H)it or (S)tay? ", "HhSs");
+            hit = (action == 'H' || action == 'h');
         }
     }
 

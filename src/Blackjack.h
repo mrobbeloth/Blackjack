@@ -16,4 +16,5 @@
 // externals
 int play_hand(float, float);
 float get_bet(float);
+char get_char_input(const std::string&, const std::string&);
 bool dealer_should_hit(int, int);
