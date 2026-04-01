@@ -3,9 +3,9 @@ CXXFLAGS ?= -std=c++20 -Wall -Wextra -pedantic
 
 DESTINATION_DIR := output/
 SRC_DIR := src/
-TARGET := $(DESTINATION_DIR)blackjack.exe
+TARGET := $(DESTINATION_DIR)blackjack
 OBJS := $(DESTINATION_DIR)Blackjack.o $(DESTINATION_DIR)Card.o $(DESTINATION_DIR)Deck.o \
-        $(DESTINATION_DIR)Display.o $(DESTINATION_DIR)Hand.o
+	    $(DESTINATION_DIR)Display.o $(DESTINATION_DIR)Hand.o $(DESTINATION_DIR)GameLogic.o
 
 TEST_DIR := tests/
 TEST_TARGET1 := $(DESTINATION_DIR)test_card_tests
@@ -23,13 +23,13 @@ all: $(TARGET)
 
 # Pattern rule: src/%.cpp -> output/%.o
 $(DESTINATION_DIR)%.o: $(SRC_DIR)%.cpp | $(DESTINATION_DIR)
-    $(CXX) $(CXXFLAGS) -c $< -o $@
+	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 $(DESTINATION_DIR):
-    mkdir -p $@
+	mkdir -p $@
 
 $(TARGET): $(OBJS)
-    $(CXX) $(OBJS) -o $@
+	$(CXX) $(OBJS) -o $@
 
 # Header dependencies
 $(DESTINATION_DIR)Blackjack.o: $(SRC_DIR)Deck.h $(SRC_DIR)Hand.h $(SRC_DIR)Display.h
@@ -70,8 +70,8 @@ test: $(TEST_TARGET1) $(TEST_TARGET2) $(TEST_TARGET3) $(TEST_TARGET4)
 	./$(TEST_TARGET4)
 
 run: $(TARGET)
-    ./$(TARGET)
+	./$(TARGET)
 
 clean:
-    $(RM) $(OBJS) $(TEST_OBJS1) $(TEST_OBJS2) $(TEST_OBJS3) $(TEST_OBJS4) $(TARGET) $(TEST_TARGET1) $(TEST_TARGET2) $(TEST_TARGET3) $(TEST_TARGET4)
-    -rmdir $(DESTINATION_DIR) 2>/dev/null || true
+	$(RM) $(OBJS) $(TEST_OBJS1) $(TEST_OBJS2) $(TEST_OBJS3) $(TEST_OBJS4) $(TARGET) $(TEST_TARGET1) $(TEST_TARGET2) $(TEST_TARGET3) $(TEST_TARGET4)
+	-rmdir $(DESTINATION_DIR) 2>/dev/null || true
