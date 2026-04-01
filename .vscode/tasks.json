@@ -72,7 +72,7 @@
       ],
       "group": {
         "kind": "build",
-        "isDefault": true
+        "isDefault": false
       },
       "problemMatcher": "$gcc",
       "options": {
@@ -96,5 +96,7 @@
         "cwd": "${workspaceFolder}"
       }
     }
-  ]
+  ],
+  "makefile.buildBeforeLaunch": "never",
+  "makefile.configureOnOpen": false
 }

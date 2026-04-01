@@ -19,14 +19,18 @@
 // redirected from that file, and return its stdout.
 static std::string run_with_input(const std::vector<std::string>& lines) {
     // Write input to a temp file (one token/line per entry)
+#ifdef _WIN32
     std::string tmpfile = "output\\test_input.txt";
+    std::string cmd = "output\\blackjack.exe < " + tmpfile + " 2>&1";
+#else
+    std::string tmpfile = "output/test_input.txt";
+    std::string cmd = "output/blackjack < " + tmpfile + " 2>&1";
+#endif
     {
         std::ofstream ofs(tmpfile);
         for (const auto& line : lines)
             ofs << line << "\n";
     }
-
-    std::string cmd = "output\\blackjack.exe < " + tmpfile + " 2>&1";
 
     std::array<char, 4096> buffer;
     std::string result;
