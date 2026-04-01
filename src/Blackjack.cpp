@@ -105,8 +105,12 @@ int play_hand(float balance, float bet){
                          balance, bet, true);
 
     /*Deal another card to the player as long as they want to hit*/
-    Display::printPrompt("(H)it or (S)tay? ");
-    std::cin >> response;
+    do {
+        Display::printPrompt("(H)it or (S)tay? ");
+        std::cin >> response;
+        if (response != 'H' && response != 'h' && response != 'S' && response != 's')
+            Display::printInfo("Invalid input. Please enter H to hit or S to stay.");
+    } while (response != 'H' && response != 'h' && response != 'S' && response != 's');
 
     hit = (response == 'H' || response == 'h');
 
@@ -118,8 +122,12 @@ int play_hand(float balance, float bet){
                              balance, bet, true);
 
         if (player_hand.score() < 21) {
-            Display::printPrompt("(H)it or (S)tay? ");
-            std::cin >> response;
+            do {
+                Display::printPrompt("(H)it or (S)tay? ");
+                std::cin >> response;
+                if (response != 'H' && response != 'h' && response != 'S' && response != 's')
+                    Display::printInfo("Invalid input. Please enter H to hit or S to stay.");
+            } while (response != 'H' && response != 'h' && response != 'S' && response != 's');
 
             hit = (response == 'H' || response == 'h');
         }
