@@ -1,5 +1,6 @@
 // Blackjack.cpp : This file contains the 'main' function. Program execution begins and ends there.
-//
+// Author: Robbeloth
+// Date: 2024-06-01
 
 
 
