@@ -1,6 +1,7 @@
 #include "Deck.h"
 #include "Card.h"
 #include <vector>
+#include <cstdlib>
 
 Deck::Deck() {
 	char s = '?';

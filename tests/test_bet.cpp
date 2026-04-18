@@ -19,14 +19,18 @@
 // redirected from that file, and return its stdout.
 static std::string run_with_input(const std::vector<std::string>& lines) {
     // Write input to a temp file (one token/line per entry)
+#ifdef _WIN32
     std::string tmpfile = "output\\test_input.txt";
+    std::string cmd = "output\\blackjack.exe < " + tmpfile + " 2>&1";
+#else
+    std::string tmpfile = "output/test_input.txt";
+    std::string cmd = "output/blackjack < " + tmpfile + " 2>&1";
+#endif
     {
         std::ofstream ofs(tmpfile);
         for (const auto& line : lines)
             ofs << line << "\n";
     }
-
-    std::string cmd = "output\\blackjack.exe < " + tmpfile + " 2>&1";
 
     std::array<char, 4096> buffer;
     std::string result;
@@ -157,4 +161,39 @@ TEST_CASE("Dealer should stand on 17 when player has less") {
 
     // Dealer has 17, should STAND in real blackjack
     CHECK(should_hit == false); 
+}
+
+// ── Hit/Stay input validation tests (issue #3) ───────────────
+
+TEST_CASE("Invalid hit/stay input does not cause hang or silent stay") {
+    // 'g' is invalid — game should re-prompt, then accept 'S'
+    auto start = std::chrono::steady_clock::now();
+    std::string output = run_with_input({"", "100", "g", "S", "N"});
+    auto elapsed = std::chrono::steady_clock::now() - start;
+    auto secs = std::chrono::duration_cast<std::chrono::seconds>(elapsed).count();
+
+    CHECK(secs < 30);
+    CHECK(output.find("Invalid input") != std::string::npos);
+}
+
+TEST_CASE("Multiple invalid hit/stay inputs then valid stay does not hang") {
+    // Several bad inputs before a valid 'S'
+    auto start = std::chrono::steady_clock::now();
+    std::string output = run_with_input({"", "100", "g", "x", "z", "S", "N"});
+    auto elapsed = std::chrono::steady_clock::now() - start;
+    auto secs = std::chrono::duration_cast<std::chrono::seconds>(elapsed).count();
+
+    CHECK(secs < 30);
+    CHECK(output.find("Invalid input") != std::string::npos);
+}
+
+TEST_CASE("Invalid hit/stay input then valid hit does not hang") {
+    // 'q' is invalid — game should re-prompt, then accept 'H' to hit, then 'S' to stay
+    auto start = std::chrono::steady_clock::now();
+    std::string output = run_with_input({"", "100", "q", "H", "S", "N"});
+    auto elapsed = std::chrono::steady_clock::now() - start;
+    auto secs = std::chrono::duration_cast<std::chrono::seconds>(elapsed).count();
+
+    CHECK(secs < 30);
+    CHECK(output.find("Invalid input") != std::string::npos);
 }

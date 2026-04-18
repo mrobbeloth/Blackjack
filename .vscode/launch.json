@@ -8,6 +8,26 @@
       "program": "${workspaceFolder}/output/blackjack.exe",
       "cwd": "${workspaceFolder}",
       "preLaunchTask": "Build Blackjack (MSVC)"
+    },
+    {
+      "name": "Debug Blackjack (Linux)",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/output/blackjack",
+      "args": [],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}",
+      "environment": [],
+      "externalConsole": false,
+      "MIMode": "gdb",
+      "setupCommands": [
+        {
+          "description": "Enable pretty-printing for gdb",
+          "text": "-enable-pretty-printing",
+          "ignoreFailures": true
+        }
+      ],
+      "preLaunchTask": "Build Blackjack (Linux)"
     }
   ]
 }

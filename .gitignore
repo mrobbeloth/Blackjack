@@ -3,4 +3,4 @@
 *.dll
 *.log
 build
-output/Debug/blackjack_tests.pdb
+output/

@@ -25,16 +25,23 @@ A command-line Blackjack game written in C++20. Play against a dealer in the ter
 ```
 Blackjack/
 ├── src/
-│   ├── Blackjack.cpp   # Entry point — game loop, betting logic, CLI flag parsing
-│   ├── Card.cpp/.h     # Card class (rank value + suit character)
-│   ├── Deck.cpp/.h     # Deck class — 52-card construction and shuffle/deal
-│   ├── Hand.cpp/.h     # Hand class — card collection and score calculation
-│   └── Display.cpp/.h  # Display class — ANSI rendering, card art, screen management
-├── output/             # Compiled binary written here (created during build)
-├── design/             # UML/design diagrams
-├── Makefile            # Linux / macOS / MinGW build file (GNU make + g++)
-├── Makefile.win        # Windows NMake build file (MSVC cl.exe)
-└── build.bat           # Windows convenience wrapper — auto-detects Visual Studio
+│   ├── Blackjack.cpp    # Entry point — game loop, betting logic, CLI flag parsing
+│   ├── Card.cpp/.h      # Card class (rank value + suit character)
+│   ├── Deck.cpp/.h      # Deck class — 52-card construction and shuffle/deal
+│   ├── Hand.cpp/.h      # Hand class — card collection and score calculation
+│   ├── GameLogic.cpp/.h # Game logic — dealer hit rules
+│   └── Display.cpp/.h   # Display class — ANSI rendering, card art, screen management
+├── tests/
+│   ├── doctest.h        # doctest v2 single-header unit test framework
+│   ├── test_card.cpp    # Unit tests for the Card class
+│   ├── test_deck.cpp    # Unit tests for the Deck class
+│   ├── test_hand.cpp    # Unit tests for the Hand class and score calculation
+│   └── test_bet.cpp     # Integration tests for bet input validation and dealer logic
+├── output/              # Compiled binaries and object files (created during build)
+├── design/              # UML/design diagrams
+├── Makefile             # Linux / macOS / MinGW build file (GNU make + g++)
+├── Makefile.win         # Windows NMake build file (MSVC cl.exe)
+└── build.bat            # Windows convenience wrapper — auto-detects Visual Studio
 ```
 
 ## Building
@@ -135,12 +142,52 @@ make run
 make clean
 ```
 
+## Unit Tests
+
+Tests are written using [doctest](https://github.com/doctest/doctest) (v2, single-header), located in the `tests/` directory. Each test suite builds into its own standalone executable.
+
+| Test binary (Linux) | Test binary (Windows) | Source | What is tested |
+|---|---|---|---|
+| `test_card_tests` | `test_card.exe` | `test_card.cpp` | `Card` construction, value and suit accessors |
+| `deck_tests` | `test_deck.exe` | `test_deck.cpp` | `Deck` deals exactly 52 valid cards; sentinel on empty deck |
+| `hand_tests` | `test_hand.exe` | `test_hand.cpp` | `Hand` scoring — number cards, face cards, aces (soft/hard) |
+| `bet_tests` | `test_bet.exe` | `test_bet.cpp` | Bet input validation (alpha, negative, overflow); dealer hit logic |
+
+### Running the tests
+
+**Linux / macOS / MinGW:**
+
+```bash
+make test
+```
+
+This builds all four test executables and runs them in sequence. All results are reported by doctest to stdout.
+
+**Windows (`build.bat`):**
+
+```bat
+build.bat test
+```
+
+**Windows (NMake):**
+
+```bat
+nmake /f Makefile.win test
+```
+
+### Adding new tests
+
+1. Create a new `.cpp` file in `tests/` with `#define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN` and `#include "doctest.h"`.
+2. Add a new `TEST_TARGET` / `TEST_OBJS` pair in `Makefile` (and `Makefile.win`) following the existing pattern.
+3. Add the new target to the `test:` phony rule dependencies and run line.
+
 ## Running
 
 The compiled binary is placed in the `output/` directory:
 
 ```
-output/blackjack.exe
+output/blackjack        # Linux / macOS
+output/blackjack.exe    # Windows
 ```
 
 **Command-line flags** (optional):
@@ -154,10 +201,12 @@ Examples:
 
 ```bash
 # Compact display (default)
-./output/blackjack.exe
+./output/blackjack        # Linux / macOS
+output\blackjack.exe      # Windows
 
 # Full ASCII art card display
-./output/blackjack.exe --full
+./output/blackjack --full
+output\blackjack.exe --full
 ```
 
 ## Gameplay
