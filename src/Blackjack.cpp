@@ -180,15 +180,18 @@ float get_bet(float balance) {
     Display::printPrompt("How much do you want to bet? $");
     std::cin >> bet;
 
-    while (std::cin.fail() || bet <= 0 || bet > balance) {
+    while (std::cin.fail() || bet <= 0 || bet > balance || bet != static_cast<int>(bet)) {
         if (std::cin.fail()) {
             std::cin.clear();
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
             Display::printBust("Invalid input. Please enter a number.");
-        } else if (bet <= 0)
+        } 
+        else if (bet <= 0)
             Display::printBust("Bet must be greater than $0.");
-        else
-            Display::printBust("You can't bet more than your balance ($" + std::to_string((int)balance) + ")");
+        else if (bet != static_cast<int>(bet))
+            Display::printBust("Your bet must be an integer.");
+        else if (bet > balance)
+            Display::printBust("You can't bet more than your balance ($" + std::to_string((int)balance) + ")");  
         Display::printPrompt("How much do you want to bet? $");
         std::cin >> bet;
     }
