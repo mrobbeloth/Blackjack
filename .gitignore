@@ -4,3 +4,4 @@
 *.log
 build
 output/
+.continue/mcpServers/new-mcp-server.yaml
