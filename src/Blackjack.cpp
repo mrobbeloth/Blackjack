@@ -197,5 +197,3 @@ float get_bet(float balance) {
     }
     return bet;
 }
-
-
