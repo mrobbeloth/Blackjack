@@ -41,21 +41,21 @@ int main(int argc, char* argv[])
         int result = play_hand(balance, bet);
 
         switch (result) {
-        case (PLAYER_BUSTED):
+        case ((int) GameResult::PLAYER_BUSTED):
             Display::printBust("Player is Busted!");
             Display::printDealerWins();
             balance -= bet;
             break;
-        case (DEALER_WINS):
+        case ((int) GameResult::DEALER_WINS):
             Display::printDealerWins();
             balance -= bet;
             break;
-        case (DEALER_BUSTED):
+        case ((int) GameResult::DEALER_BUSTED):
             Display::printBust("Dealer is Busted!");
             Display::printPlayerWins();
             balance += bet;
             break;
-        case (PLAYER_WINS):
+        case ((int) GameResult::PLAYER_WINS):
             Display::printPlayerWins();
             balance += bet;
             break;
@@ -150,24 +150,24 @@ int play_hand(float balance, float bet){
                                  balance, bet, false);
 
             if (dealer_hand.score() >= 22) {
-                result = DEALER_BUSTED;
+                result = (int) GameResult::DEALER_BUSTED;
             }
         }
     }
     else {
 
-        result = PLAYER_BUSTED;
+        result = (int) GameResult::PLAYER_BUSTED;
     }
     int ds = dealer_hand.score();
     int ps = player_hand.score();
     if (ds < 22 &&  ps < 22) {
         if (ds > ps) {
 
-            result = DEALER_WINS;
+            result = (int) GameResult::DEALER_WINS;
         }
         else {
 
-            result = PLAYER_WINS;
+            result = (int) GameResult::PLAYER_WINS;
         }
     }
     return result;

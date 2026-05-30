@@ -8,11 +8,16 @@
 #include "Deck.h"
 #include "Display.h"
 
-// Constants for game results
-#define PLAYER_WINS 1
-#define DEALER_WINS 0
-#define PLAYER_BUSTED -1
-#define DEALER_BUSTED 2
+// Game result enum class for better type safety
+enum class GameResult
+{
+    PLAYER_WINS = 1,
+    DEALER_WINS = 0,
+    PLAYER_BUSTED = -1,
+    DEALER_BUSTED = 2,
+    PUSH = 3,     // Tie/Draw (added for completeness)
+    BLACKJACK = 4 // Natural blackjack (added for future implementation)
+};
 
 // externals
 int play_hand(float, float);
